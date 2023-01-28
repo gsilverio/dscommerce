@@ -4,10 +4,13 @@ import com.example.dscommerce.dto.ProductDTO;
 import com.example.dscommerce.entites.Product;
 import com.example.dscommerce.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,7 +22,11 @@ public class ProductService {
         Optional<Product> result = repository.findById(id);
         Product product = result.get();
         ProductDTO dto = new ProductDTO(product);
-
         return dto;
+    }
+    @Transactional(readOnly = true)
+    public Page<ProductDTO> findAll(Pageable pageable) {
+        Page<Product> result = repository.findAll(pageable);
+        return result.map(x-> new ProductDTO(x));
     }
 }
